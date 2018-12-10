@@ -260,7 +260,7 @@ static void r_context_configure(void)
 	}
 
 	if (context->keyringpath) {
-		context->config->keyring_path = context->keyringpath;
+		context->config->keyring_path = g_strdup(context->keyringpath);
 	}
 
 	context->pending = FALSE;
@@ -542,4 +542,20 @@ const RaucContext *r_context(void)
 		r_context_configure();
 
 	return context;
+}
+
+void r_context_clean(void)
+{
+	if (context) {
+		g_free(context->certpath);
+		g_free(context->keypath);
+		g_free(context->keyringpath);
+		context->certpath = NULL;
+		context->keypath = NULL;
+		context->keyringpath = NULL;
+
+		if(context->config) {
+			context->config->keyring_path = NULL;
+		}
+	}
 }
